@@ -6,8 +6,8 @@ This a http request package for s.o.l.i.d principle users or clean architecture
 
 Save your platform token in a more secured way. This package saves your login token directly 
 to the session storage in an encrypted form with unique fingerprint and cannot be manipulated.
-if this token is copied and used on other browsers, authorization will always fail cos the browser.
-fingerprint is different.
+if this token is copied and used on other browsers, authorization will always fail because the 
+browser's fingerprint is different.
 
 
 - Stay `safe`.
