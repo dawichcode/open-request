@@ -82,7 +82,7 @@ export default App
 - Happy hacking`
 
 ***Disclaimer***
-- we are no responsible for any data loss you might face while using this package, it is 
+- we are not responsible for any data loss you might face while using this package, it is 
 - develop with your best interest at heart.
  
 ***THANK YOU*** 
