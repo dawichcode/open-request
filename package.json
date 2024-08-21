@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "repository": {
-    "url": "htt"
+    "url": "https://github.com/dawichcode/open-request.git"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm pack && npm publish",
+    "build": "tsc -b && vite build && npm pack && npm publish&& npm patch version",
     "lint": "eslint .",
     "preview": "vite preview"
   },
