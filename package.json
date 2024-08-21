@@ -1,14 +1,24 @@
 {
   "name": "open-request",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "0.0.3",
   "type": "module",
   "repository": {
     "url": "https://github.com/dawichcode/open-request.git"
   },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "author": "Samuel Clinton",
+  "email": "samuelclinton975@gmail.com",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm pack && npm publish&& npm patch version",
+    "build": "npm run build:esm && npm run build:cjs && npm pack && npm publish && npm version patch",
+    "build:esm": "tsc -b",
+    "build:cjs": "tsc --module CommonJs --outDir dist/cjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
