@@ -43,9 +43,10 @@ browser's fingerprint is different.
 
 ```jsx
 import useAjax from "./hooks/useAjax.tsx";
+import useOnce from "./hooks/useOnce.tsx";
 
 function App() {
-        {/*
+    {/*
           *send: method has three @params send(method,url,data) ,
           *response: takes in the type of data that you need (T)
           *loading: gets the loading property true or false,
@@ -54,9 +55,12 @@ function App() {
           *retries: return number of retries
           *url: endpoint url
         */}
+    const {send,response,retries, loading, logout,error}=useAjax<string>(8600)
 
-    const {send,retries,response, loading, logout,error}=useAjax<string>(8600)
-
+    //shipped with use once custom hook  that can be recalled
+    const trigger=useOnce(() => {
+        console.log("hello");
+    })
 
     return <>
         {/*
@@ -70,7 +74,12 @@ function App() {
         {response&&<div>{response}</div>}
         {error&&<div>{error}</div>}
         {retries&&<div>{retries}</div>}
-        <button onClick={()=>logout()}>Logout</button>
+
+        <button onClick={()=> {
+            logout();
+            //recalling the function  from the custom hook
+            trigger();
+        }}>Logout</button>
     </>
 }
 
