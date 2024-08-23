@@ -1,5 +1,6 @@
 import useAjax from "./hooks/useAjax.tsx";
 import useOnce from "./hooks/useOnce.tsx";
+import PropertyError from "./utils/propertyError.tsx";
 
 function App() {
   {/*
@@ -11,25 +12,30 @@ function App() {
           *retries: return number of retries
           *url: endpoint url
         */}
-  const {send,response,retries, loading, logout,error}=useAjax<string>(8600)
+  const {send,response,retries,errors , loading, logout,error}=useAjax<string>(8600)
 
   //shipped with use once custom hook  that can be recalled
   const trigger=useOnce(() => {
-    console.log("hello");
+
   })
+
 
   return <>
     {/*
           *method: read,create,update,delete,
           *url: endpoint url
         */}
-  <button onClick={() => send({method:"read",url:"user/10?page=1"})}>
+  <button onClick={() =>{
+    send({method:"create",url:"auth/login",data:{}});
+  }}>
     Send
   </button>
     {loading&&<p>loading...</p>}
     {response&&<div>{response}</div>}
     {error&&<div>{error}</div>}
     {retries&&<div>{retries}</div>}
+    {(errors)&&<ul>
+      <h2>errors</h2>{(errors as PropertyError)?.password?.map((e:string, i:number) => <li key={i}>{e}</li>)}</ul>}
 
     <button onClick={()=> {
       logout();

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import httpClient from '../utils/httpClient';
-import { handleError } from '../utils/errorHandler';
+import {handleError, handleErrors} from '../utils/errorHandler';
 import {
     saveTokenWithExpiration,
     removeToken,
@@ -11,8 +11,9 @@ import {
 } from '../utils/utils';
 import {API_BASE_URL, SUBURL} from "../config";
 import axios, {AxiosError} from "axios";
+import PropertyError from "../utils/propertyError.tsx";
 
- type Options = 'create' | 'read' | 'update' | 'delete';
+ type Options = 'create'| "post" | 'read' | "get" | "put" | 'update'  | 'delete' | "remove";
 
 
 const errorMessages: Record<number, string> = {
@@ -28,14 +29,17 @@ const handleErrorCode = (code: number): string => {
     return errorMessages[code] || 'An unknown error occurred.';
 };
 
+
 interface CrudOptions {
     method: Options;
     url: string;
     data?: any;
 }
 
+
 const useAjax = <T,>(expireIn:number=8600) => {
     const [loading, setLoading] = useState(false);
+    const [errors,setErrors]=useState<PropertyError>({});
     const [error, setError] = useState<string | null>(null);
     const [response, setResponse] = useState<T | null>(null);
     const [retries,setRetry]=useState(0);
@@ -47,6 +51,8 @@ const useAjax = <T,>(expireIn:number=8600) => {
         setLoading(true);
         setError(null);
         setRetry(retries+1);
+        setErrors({});
+
         try {
             if (isTokenExpired()) {
                 saveTokenWithExpiration("token",8600);
@@ -56,15 +62,19 @@ const useAjax = <T,>(expireIn:number=8600) => {
             let result;
             switch (method) {
                 case 'create':
+                case "post":
                     result = await httpClient.post(url, data);
                     break;
                 case 'read':
+                case "get":
                     result = await httpClient.get(url);
                     break;
                 case 'update':
+                case "put":
                     result = await httpClient.put(url, data);
                     break;
                 case 'delete':
+                case "remove":
                     result = await httpClient.delete(url);
                     break;
                 default:
@@ -79,6 +89,8 @@ const useAjax = <T,>(expireIn:number=8600) => {
             setResponse(result.data);
             return result.data;
         } catch (err: any) {
+
+            setErrors(handleErrors(err) as PropertyError);
             if(isDebugMode()) {
                 const errorMessage = handleError(err);
                 setError(errorMessage);
@@ -92,10 +104,11 @@ const useAjax = <T,>(expireIn:number=8600) => {
                 }else
                 throw new Error("unknown error");
             }
-        } finally {
+        }
+          finally {
             setLoading(false);
         }
-    };
+};
 
     // Function to log out and clear the token
     const logout = () => {
@@ -104,7 +117,7 @@ const useAjax = <T,>(expireIn:number=8600) => {
         setError(null);
     };
 
-    return { send:execute, response, loading, error, logout,retries };
+    return { send:execute, errors:errors, response, loading, error, logout,retries };
 };
 
 export default useAjax;

@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
 import { getToken, isTokenExpired, removeToken } from './utils';
 
 // Create an axios instance
 const httpClient = axios.create({
-    baseURL: API_BASE_URL,
+    //@ts-ignore
+    baseURL: window.host,
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': ' multipart/form-data',
     },
     withCredentials:true,
     withXSRFToken:true
