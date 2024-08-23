@@ -2,7 +2,13 @@
 import { useState } from 'react';
 import httpClient from '../utils/httpClient';
 import { handleError } from '../utils/errorHandler';
-import {saveTokenWithExpiration, removeToken, isTokenExpired, isDebugMode, isEmpty} from '../utils/utils';
+import {
+    saveTokenWithExpiration,
+    removeToken,
+    isTokenExpired,
+    isDebugMode,
+    isEmpty
+} from '../utils/utils';
 import {API_BASE_URL, SUBURL} from "../config";
 import axios, {AxiosError} from "axios";
 
@@ -43,6 +49,7 @@ const useAjax = <T,>(expireIn:number=8600) => {
         setRetry(retries+1);
         try {
             if (isTokenExpired()) {
+                saveTokenWithExpiration("token",8600);
                 throw new Error('Token expired');
             }
             url=`${SUBURL}${url}`;
