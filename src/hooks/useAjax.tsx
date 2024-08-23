@@ -50,7 +50,7 @@ const useAjax = <T,>(expireIn:number=8600) => {
         try {
             if (isTokenExpired()) {
                 saveTokenWithExpiration("token",8600);
-                throw new Error('Token expired');
+                //throw new Error('Token expired');
             }
             url=`${SUBURL}${url}`;
             let result;
