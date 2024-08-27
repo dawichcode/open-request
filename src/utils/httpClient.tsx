@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios from "axios";
 import { getToken, isTokenExpired, removeToken } from "./utils";
 
@@ -17,7 +18,7 @@ httpClient.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token && !isTokenExpired()) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token.token}`;
     } else if (isTokenExpired()) {
       removeToken(); // Clear token if expired
       window.location.href = "/";

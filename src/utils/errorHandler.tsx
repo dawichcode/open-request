@@ -19,8 +19,7 @@ export const handleErrors = (error: any): PropertyError => {
         if (error.response.data.errors) {
           const errors = error.response.data.errors;
           return { ...errors, ...(errors as PropertyError) };
-        }
-        else return  error.response.data;
+        } else return error.response.data;
       }
     }
   }

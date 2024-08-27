@@ -2,6 +2,10 @@ import CryptoJS from "crypto-js";
 import { API_BASE_URL } from "../config";
 import { encrypt } from "../index";
 
+interface TokenDataProp {
+  token: string;
+  expire_in: string;
+}
 export function getBrowserInfo(): { [key: string]: string } {
   const browserInfo: { [key: string]: string } = {
     userAgent: navigator.userAgent,
@@ -35,38 +39,39 @@ export const decryptToken = (encryptedToken: string): string => {
 };
 
 // Save the encrypted token to sessionStorage
-export const saveToken = (token: string) => {
-  const encryptedToken = encryptToken(token);
+export const saveToken = (token: string, expire_in: string) => {
+  const data: TokenDataProp = {
+    token: token,
+    expire_in: expire_in,
+  };
+  const tokendata = JSON.stringify(data);
+  const encryptedToken = encryptToken(tokendata);
+
   sessionStorage.setItem(TOKEN_STORAGE_KEY, encryptedToken);
 };
 
 // Retrieve and decrypt the token from sessionStorage
-export const getToken = (): string | null => {
+export const getToken = (): TokenDataProp | null => {
   const encryptedToken = sessionStorage.getItem(TOKEN_STORAGE_KEY);
-  return encryptedToken ? decryptToken(encryptedToken) : null;
+  return encryptedToken
+    ? (JSON.parse(decryptToken(encryptedToken)) as TokenDataProp)
+    : null;
 };
 
 // Remove the token from storage
 export const removeToken = () => {
   sessionStorage.removeItem(TOKEN_STORAGE_KEY);
-  sessionStorage.removeItem(`${TOKEN_STORAGE_KEY}_expiration`);
 };
 // Set the token with an expiration time (e.g., 1 hour)
 export const saveTokenWithExpiration = (token: string, expiresIn: number) => {
   const expirationTime = Date.now() + expiresIn * 1000; // expiresIn is in seconds
-  saveToken(token);
-  sessionStorage.setItem(
-    `${TOKEN_STORAGE_KEY}_expiration`,
-    expirationTime.toString(),
-  );
+  saveToken(token, expirationTime.toString());
 };
 
 // Check if the token is expired
 export const isTokenExpired = (): boolean => {
-  const expirationTime = sessionStorage.getItem(
-    `${TOKEN_STORAGE_KEY}_expiration`,
-  );
-  if (!expirationTime) {
+  const expirationTime = parseInt(getToken()?.expire_in ?? "0");
+  if (expirationTime === 0) {
     saveTokenWithExpiration(encrypt("token"), 8600);
     return false;
   }
