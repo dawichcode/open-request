@@ -29,7 +29,7 @@ function App() {
        */}
       <button
         onClick={() => {
-          send({ method: "create", url: "auth/login", data: {} });
+          send({ method: "create", url: "user/login/account", data: {} });
         }}
       >
         Send

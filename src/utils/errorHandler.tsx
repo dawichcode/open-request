@@ -20,6 +20,7 @@ export const handleErrors = (error: any): PropertyError => {
           const errors = error.response.data.errors;
           return { ...errors, ...(errors as PropertyError) };
         }
+        else return  error.response.data;
       }
     }
   }
