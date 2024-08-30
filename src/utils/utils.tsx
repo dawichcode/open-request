@@ -73,7 +73,7 @@ export const isTokenExpired = (): boolean => {
   const expirationTime = parseInt(getToken()?.expire_in ?? "0");
   if (expirationTime === 0) {
     saveTokenWithExpiration(encrypt("token"), 8600);
-    return false;
+    return true;
   }
   return dateExpired(expirationTime);
 };
