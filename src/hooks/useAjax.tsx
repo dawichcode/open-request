@@ -26,7 +26,9 @@ type Options =
 const errorMessages: Record<number, string> = {
   400: "Bad Request. Please check your input.",
   401: "Unauthorized. Please login again.",
-  403: "Forbidden. You do not have permission to access this resource.",
+  403: "Forbidden.",
+  405: "Method Not Allowed. Try another method!",
+  422: "Forbidden. Validation Failed.",
   404: "Not Found. The resource could not be found.",
   500: "Internal Server Error. Please try again later.",
   // Add more error codes and messages as needed
@@ -65,7 +67,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
     setError(null);
     setRetry(retries + 1);
     setErrors({});
-
+    setDownloadProgress(0);
+    setProgress(0);
     try {
       if (isTokenExpired()) {
         saveTokenWithExpiration("token", 8600);
@@ -74,11 +77,13 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       httpClient.interceptors.request.use(value => {
           value.onDownloadProgress=progressEvent => {
               //@ts-ignore
-              setDownloadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+              const p=Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setDownloadProgress(p);
           }
           value.onUploadProgress=progressEvent => {
               //@ts-ignore
-              setProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+              const p=Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setProgress(p);
           }
          return value;
       });

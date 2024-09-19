@@ -15,7 +15,7 @@ function App() {
      *url: endpoint url
      */
   }
-  const { send, response, retries, errors, loading, logout, error } =
+  const { send, response,downloadProgress, retries, errors, loading, logout, error } =
     useAjax<string>(8600);
 
   //shipped with use once custom hook  that can be recalled
@@ -34,7 +34,7 @@ function App() {
       >
         Send
       </button>
-      {loading && <p>loading...</p>}
+      {loading && <p>loading... {downloadProgress}%</p>}
       {response && <div>{response}</div>}
       {error && <div>{error}</div>}
       {retries && <div>{retries}</div>}
