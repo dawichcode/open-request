@@ -82,7 +82,6 @@ const useAjax = <T,>(expireIn: number = 8600) => {
           }
          return value;
       });
-
       url = `${SUBURL}${url}`;
       let result;
       switch (method) {
