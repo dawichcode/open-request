@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment */
 import { useState } from "react";
 import httpClient from "../utils/httpClient";
 import { handleError, handleErrors } from "../utils/errorHandler";
@@ -48,6 +48,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<T | null>(null);
   const [retries, setRetry] = useState(0);
+    const [downloadProgress,setDownloadProgress]=useState(0);
+    const [progress,setProgress]=useState(0);
 
   const execute = async ({
     method,
@@ -69,6 +71,18 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         saveTokenWithExpiration("token", 8600);
         //throw new Error('Token expired');
       }
+      httpClient.interceptors.request.use(value => {
+          value.onDownloadProgress=progressEvent => {
+              //@ts-ignore
+              setDownloadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+          }
+          value.onUploadProgress=progressEvent => {
+              //@ts-ignore
+              setProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+          }
+         return value;
+      });
+
       url = `${SUBURL}${url}`;
       let result;
       switch (method) {
@@ -135,6 +149,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
     error,
     logout,
     retries,
+      progress,
+      downloadProgress
   };
 };
 
