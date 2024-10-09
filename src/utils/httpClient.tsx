@@ -4,8 +4,6 @@ import { getToken, isTokenExpired, removeToken } from "./utils";
 
 // Create an axios instance
 const httpClient = axios.create({
-  //@ts-ignore
-  baseURL: window.host,
   headers: {
     "Content-Type": " multipart/form-data",
   },

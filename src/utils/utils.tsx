@@ -68,7 +68,6 @@ export function isFullUrl(input: string): boolean {
   }
 }
 
-
 // Remove the token from storage
 export const removeToken = () => {
   sessionStorage.removeItem(TOKEN_STORAGE_KEY);

@@ -7,7 +7,8 @@ import {
   removeToken,
   isTokenExpired,
   isDebugMode,
-  isEmpty, isFullUrl,
+  isEmpty,
+  isFullUrl,
 } from "../utils/utils";
 import { API_BASE_URL, SUBURL } from "../config";
 import axios, { AxiosError } from "axios";
@@ -74,6 +75,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         saveTokenWithExpiration("token", 8600);
         //throw new Error('Token expired');
       }
+
       httpClient.interceptors.request.use((value) => {
         value.onDownloadProgress = (progressEvent) => {
           const p = Math.round(
@@ -91,7 +93,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         };
         return value;
       });
-      url =isFullUrl(url)?url:`${SUBURL}${url}`;
+      // @ts-ignore
+      url = isFullUrl(url) ? url : `${window?.host}${SUBURL}${url}`;
       let result;
       switch (method) {
         case "create":
