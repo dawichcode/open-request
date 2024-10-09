@@ -94,7 +94,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         return value;
       });
       // @ts-ignore
-      var murl = isFullUrl(url) ? url : `${window?.host}${SUBURL}${url}`;
+      const murl = isFullUrl(url) ? url : `${window?.host}${SUBURL}${url}`;
       let result;
       switch (method) {
         case "create":
@@ -120,6 +120,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       // If the response contains a token, save it securely with an expiration time
       if (result.data.token) {
         saveTokenWithExpiration(result.data.token, expireIn);
+      }else if(result.data.data.token){
+        saveTokenWithExpiration(result.data.data.token, expireIn);
       }
 
       setResponse(result.data);

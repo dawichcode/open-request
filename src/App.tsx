@@ -37,7 +37,11 @@ function App() {
        */}
       <button
         onClick={() => {
-          send({ method: "create", url: "http://localhost:8080/user/login/account", data: {} });
+          send({
+            method: "create",
+            url: "http://localhost:8080/user/login/account",
+            data: {},
+          });
         }}
       >
         Send
