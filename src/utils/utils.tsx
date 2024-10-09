@@ -58,6 +58,17 @@ export const getToken = (): TokenDataProp | null => {
     : null;
 };
 
+export function isFullUrl(input: string): boolean {
+  try {
+    const url = new URL(input);
+    return !!url.protocol && !!url.hostname;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_e) {
+    return false;
+  }
+}
+
+
 // Remove the token from storage
 export const removeToken = () => {
   sessionStorage.removeItem(TOKEN_STORAGE_KEY);

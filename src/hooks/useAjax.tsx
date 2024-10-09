@@ -7,7 +7,7 @@ import {
   removeToken,
   isTokenExpired,
   isDebugMode,
-  isEmpty,
+  isEmpty, isFullUrl,
 } from "../utils/utils";
 import { API_BASE_URL, SUBURL } from "../config";
 import axios, { AxiosError } from "axios";
@@ -50,8 +50,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<T | null>(null);
   const [retries, setRetry] = useState(0);
-    const [downloadProgress,setDownloadProgress]=useState(0);
-    const [progress,setProgress]=useState(0);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   const execute = async ({
     method,
@@ -74,20 +74,24 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         saveTokenWithExpiration("token", 8600);
         //throw new Error('Token expired');
       }
-      httpClient.interceptors.request.use(value => {
-          value.onDownloadProgress=progressEvent => {
-              //@ts-ignore
-              const p=Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              setDownloadProgress(p);
-          }
-          value.onUploadProgress=progressEvent => {
-              //@ts-ignore
-              const p=Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              setProgress(p);
-          }
-         return value;
+      httpClient.interceptors.request.use((value) => {
+        value.onDownloadProgress = (progressEvent) => {
+          const p = Math.round(
+            //@ts-ignore
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          setDownloadProgress(p);
+        };
+        value.onUploadProgress = (progressEvent) => {
+          const p = Math.round(
+            //@ts-ignore
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          setProgress(p);
+        };
+        return value;
       });
-      url = `${SUBURL}${url}`;
+      url =isFullUrl(url)?url:`${SUBURL}${url}`;
       let result;
       switch (method) {
         case "create":
@@ -153,8 +157,8 @@ const useAjax = <T,>(expireIn: number = 8600) => {
     error,
     logout,
     retries,
-      progress,
-      downloadProgress
+    progress,
+    downloadProgress,
   };
 };
 

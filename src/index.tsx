@@ -4,7 +4,7 @@ import {
   isEmpty,
   encryptToken,
   decryptToken,
-  dateExpired,
+  dateExpired, isFullUrl,
 } from "./utils/utils";
 import useOnce from "./hooks/useOnce";
 import httpClient from "./utils/httpClient";
@@ -19,5 +19,7 @@ export {
   decryptToken as decrypt,
   dateExpired,
   httpClient,
+  isFullUrl
 };
+
 export type { PropertyError };

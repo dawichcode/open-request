@@ -15,8 +15,16 @@ function App() {
      *url: endpoint url
      */
   }
-  const { send, response,downloadProgress, retries, errors, loading, logout, error } =
-    useAjax<string>(8600);
+  const {
+    send,
+    response,
+    downloadProgress,
+    retries,
+    errors,
+    loading,
+    logout,
+    error,
+  } = useAjax<string>(8600);
 
   //shipped with use once custom hook  that can be recalled
   const trigger = useOnce(() => {});
