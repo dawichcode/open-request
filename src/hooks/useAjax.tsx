@@ -94,24 +94,24 @@ const useAjax = <T,>(expireIn: number = 8600) => {
         return value;
       });
       // @ts-ignore
-      url = isFullUrl(url) ? url : `${window?.host}${SUBURL}${url}`;
+      var murl = isFullUrl(url) ? url : `${window?.host}${SUBURL}${url}`;
       let result;
       switch (method) {
         case "create":
         case "post":
-          result = await httpClient.post(url, data);
+          result = await httpClient.post(murl, data);
           break;
         case "read":
         case "get":
-          result = await httpClient.get(url);
+          result = await httpClient.get(murl);
           break;
         case "update":
         case "put":
-          result = await httpClient.put(url, data);
+          result = await httpClient.put(murl, data);
           break;
         case "delete":
         case "remove":
-          result = await httpClient.delete(url);
+          result = await httpClient.delete(murl);
           break;
         default:
           throw new Error("Invalid method");
