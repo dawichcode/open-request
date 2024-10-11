@@ -66,7 +66,6 @@ export function isFullUrl(input: string): boolean {
   } catch (_e) {
     return false;
   }
-
 }
 
 // Remove the token from storage

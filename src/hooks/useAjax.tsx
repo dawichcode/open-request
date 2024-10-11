@@ -35,8 +35,8 @@ const errorMessages: Record<number, string> = {
   // Add more error codes and messages as needed
 };
 
-const handleErrorCode = (code: number): string => {
-  return errorMessages[code] || "An unknown error occurred.";
+const handleErrorCode = (code: number,message:string|undefined): string => {
+  return (errorMessages[code] || "An unknown error occurred.")+` <br/> -${message??""}`;
 };
 
 interface CrudOptions {
@@ -120,7 +120,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       // If the response contains a token, save it securely with an expiration time
       if (result.data.token) {
         saveTokenWithExpiration(result.data.token, expireIn);
-      }else if(result.data.data.token){
+      } else if (result.data.data.token) {
         saveTokenWithExpiration(result.data.data.token, expireIn);
       }
 
@@ -128,6 +128,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       return result.data;
     } catch (err: any) {
       setErrors(handleErrors(err) as PropertyError);
+
       if (isDebugMode()) {
         const errorMessage = handleError(err);
         setError(errorMessage);
@@ -137,6 +138,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
           const axiosError = err as AxiosError;
           const errorMessage = handleErrorCode(
             axiosError.response?.status ?? 0,
+              handleError(err)
           );
           setError(errorMessage);
           throw new Error(errorMessage);
