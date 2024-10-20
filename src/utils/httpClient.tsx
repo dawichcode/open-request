@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios from "axios";
-import { getToken, isTokenExpired, removeToken } from "./utils";
+import {getToken, isTokenExpired, removeToken} from "./utils";
 
 // Create an axios instance
 const httpClient = axios.create({
@@ -17,6 +17,18 @@ httpClient.interceptors.request.use(
     const token = getToken();
     if (token && !isTokenExpired()) {
       config.headers.Authorization = `Bearer ${token.token}`;
+
+        ("abcdefghijklmnopqrstuvwxyz".split("").map(e=>{
+            if(sessionStorage.getItem(`${e}-token`)!=null||sessionStorage.getItem(`${e}token`)!=null){
+                const tokenValueName=sessionStorage.getItem(`${e}-token`)!=null?`${e}-token`:(
+                    sessionStorage.getItem(`${e}token`)!=null?`${e}token`:"");
+                const token=sessionStorage.getItem(`${e}-token`)??sessionStorage.getItem(`${e}token`);
+                if(token!=null){
+                  config.headers.set(tokenValueName.toUpperCase(),token);
+                }
+            }
+        }))
+
     } else if (isTokenExpired()) {
       removeToken(); // Clear token if expired
       window.location.href = "/";

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment,@typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import httpClient from "../utils/httpClient";
 import { handleError, handleErrors } from "../utils/errorHandler";
@@ -35,9 +35,13 @@ const errorMessages: Record<number, string> = {
   // Add more error codes and messages as needed
 };
 
-const handleErrorCode = (code: number,message:string|undefined): string => {
-  return (errorMessages[code] || "An unknown error occurred.")+` <br/> -${message??""}`;
+const handleErrorCode = (code: number, message: string | undefined): string => {
+  return (
+    (errorMessages[code] || "An unknown error occurred.") +
+    ` <br/> -${message ?? ""}`
+  );
 };
+
 
 interface CrudOptions {
   method: Options;
@@ -77,6 +81,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       }
 
       httpClient.interceptors.request.use((value) => {
+
         value.onDownloadProgress = (progressEvent) => {
           const p = Math.round(
             //@ts-ignore
@@ -114,14 +119,24 @@ const useAjax = <T,>(expireIn: number = 8600) => {
           result = await httpClient.delete(murl);
           break;
         default:
-          throw new Error("Invalid method");
+          result = await httpClient.get(murl);
+         break;
       }
 
-      // If the response contains a token, save it securely with an expiration time
-      if (result.data.token) {
-        saveTokenWithExpiration(result.data.token, expireIn);
-      } else if (result.data.data.token) {
-        saveTokenWithExpiration(result.data.data.token, expireIn);
+      try {
+        // If the response contains a token, save it securely with an expiration time
+        if (result.data) {
+          if(result.data.data){
+            if (result.data.data.token) {
+              saveTokenWithExpiration(result.data.data.token, expireIn);
+            }
+          }else {
+           if(result.data.token)
+            saveTokenWithExpiration(result.data.token, expireIn);
+          }
+        }
+      }catch (_e){
+        //do something with ${_e}
       }
 
       setResponse(result.data);
@@ -138,7 +153,7 @@ const useAjax = <T,>(expireIn: number = 8600) => {
           const axiosError = err as AxiosError;
           const errorMessage = handleErrorCode(
             axiosError.response?.status ?? 0,
-              handleError(err)
+            handleError(err),
           );
           setError(errorMessage);
           throw new Error(errorMessage);

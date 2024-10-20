@@ -1,7 +1,7 @@
 {
   "name": "open-request",
   "private": false,
-  "version": "1.0.94",
+  "version": "1.0.95",
   "type": "module",
   "repository": {
     "url": "https://github.com/dawichcode/open-request.git"

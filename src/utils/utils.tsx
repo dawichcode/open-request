@@ -68,6 +68,11 @@ export function isFullUrl(input: string): boolean {
   }
 }
 
+export const hastoken = (str: string): boolean => {
+  const regex = /^[a-z]-?[a-z]+$/;
+  return regex.test(str);
+};
+
 // Remove the token from storage
 export const removeToken = () => {
   sessionStorage.removeItem(TOKEN_STORAGE_KEY);
