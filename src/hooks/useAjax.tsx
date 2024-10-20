@@ -42,7 +42,6 @@ const handleErrorCode = (code: number, message: string | undefined): string => {
   );
 };
 
-
 interface CrudOptions {
   method: Options;
   url: string;
@@ -81,7 +80,6 @@ const useAjax = <T,>(expireIn: number = 8600) => {
       }
 
       httpClient.interceptors.request.use((value) => {
-
         value.onDownloadProgress = (progressEvent) => {
           const p = Math.round(
             //@ts-ignore
@@ -120,22 +118,22 @@ const useAjax = <T,>(expireIn: number = 8600) => {
           break;
         default:
           result = await httpClient.get(murl);
-         break;
+          break;
       }
 
       try {
         // If the response contains a token, save it securely with an expiration time
         if (result.data) {
-          if(result.data.data){
+          if (result.data.data) {
             if (result.data.data.token) {
               saveTokenWithExpiration(result.data.data.token, expireIn);
             }
-          }else {
-           if(result.data.token)
-            saveTokenWithExpiration(result.data.token, expireIn);
+          } else {
+            if (result.data.token)
+              saveTokenWithExpiration(result.data.token, expireIn);
           }
         }
-      }catch (_e){
+      } catch (_e) {
         //do something with ${_e}
       }
 

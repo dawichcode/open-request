@@ -2,6 +2,7 @@ import React from "react";
 import useAjax from "./hooks/useAjax";
 import useOnce from "./hooks/useOnce";
 import PropertyError from "./utils/propertyError";
+import {encrypt} from "./index";
 
 function App() {
   {
@@ -38,9 +39,11 @@ function App() {
       <button
         onClick={() => {
           send({
-            method: "create",
-            url: "http://localhost:8080/user/login/account",
+            method: "get",
+            url: "key",
             data: {},
+          }).then(value => console.log(value)).catch(e=>{
+              sessionStorage.setItem("btoken",encrypt("lowkey"))
           });
         }}
       >
